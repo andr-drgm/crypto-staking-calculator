@@ -2,13 +2,23 @@ import './App.css';
 import NavigationBar from './components/NavigationBar';
 import CalculatorV1 from './pages/CalculatorV1';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Donations from './components/Donations';
+import { Container } from '@mui/material';
 
 function App() {
   return (
     <div>
       <ThemeProvider theme={theme}>
         <NavigationBar />
-        <CalculatorV1 />
+        <Container
+          component="main"
+          maxWidth="sm"
+          sx={{ marginBottom: 2, '& .MuiTextField-root': { mb: 2 } }}
+        >
+          <CalculatorV1 />
+          <Donations />
+        </Container>
+
       </ThemeProvider>
 
     </div>
