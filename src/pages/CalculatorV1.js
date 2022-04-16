@@ -42,9 +42,9 @@ export default class CalculatorV1 extends Component {
                 // apr = ((1 + parseInt(this.state.apr)/parseInt(this.state.compoundTimes)) ** parseInt(this.state.compoundTimes)) - 1;
                 apr = (((this.state.apr / this.state.compoundTimes) / 100 + 1) ** this.state.compoundTimes - 1) * 100
 
-            console.log("APR: ", apr, " CompoundTimes: ", this.state.compoundTimes)
+            // console.log("APR: ", apr, " CompoundTimes: ", this.state.compoundTimes)
 
-            yearlyAPR = apr.toFixed(2);
+            yearlyAPR = parseInt(apr).toFixed(2);
             yearlyReward = ((stakedValue * apr) / 100).toFixed(2);
             // console.log("Staked Value: ", stakedValue, " YearlyReward: ", yearlyReward)
             dailyAPR = (yearlyAPR / 365).toFixed(2);
