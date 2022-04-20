@@ -1,3 +1,7 @@
+# Crypto Staking Calculator
+
+<img src="https://github.com/andr-drgm/assets/blob/main/StakingCalculator.jpg" alt="Website main page" />
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
