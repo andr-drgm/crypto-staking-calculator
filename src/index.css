@@ -1,13 +1,105 @@
+:root {
+  --bg-top: #152652;
+  --bg-bottom: #090d1c;
+  --panel: #16264b;
+  --panel-strong: #0f1a36;
+  --panel-alt: #1d315f;
+  --ink: #07111f;
+  --shadow: #040912;
+  --text-primary: #f4f7ff;
+  --text-muted: #c6d5f8;
+  --accent-gold: #ffbf5f;
+  --accent-teal: #78fcd6;
+  --accent-pink: #ff87c1;
+  --font-display: 'Press Start 2P', cursive;
+  --font-body: 'Chakra Petch', sans-serif;
+  --font-mono: 'VT323', monospace;
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  min-height: 100vh;
+  font-family: var(--font-body);
+  background:
+    radial-gradient(circle at top left, rgba(112, 202, 255, 0.12), transparent 28%),
+    radial-gradient(circle at top right, rgba(255, 135, 193, 0.12), transparent 24%),
+    linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+  color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.2;
+  background-image:
+    radial-gradient(circle at 20% 22%, rgba(255, 255, 255, 0.38) 0 1px, transparent 1px),
+    radial-gradient(circle at 75% 12%, rgba(255, 255, 255, 0.4) 0 1px, transparent 1px),
+    radial-gradient(circle at 82% 36%, rgba(255, 255, 255, 0.28) 0 1px, transparent 1px),
+    radial-gradient(circle at 10% 64%, rgba(255, 255, 255, 0.28) 0 1px, transparent 1px),
+    radial-gradient(circle at 65% 72%, rgba(255, 255, 255, 0.34) 0 1px, transparent 1px);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: var(--font-mono);
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

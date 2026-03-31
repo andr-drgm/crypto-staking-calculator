@@ -1,53 +1,154 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Press+Start+2P&family=VT323&display=swap"
+      rel="stylesheet"
+    />
 
-<head>
-  <meta charset="utf-8" />
-  <!-- <link rel="icon" href="%PUBLIC_URL%/favicon.ico" /> -->
-  <link type="image/png" sizes="16x16" rel="icon" href="%PUBLIC_URL%/icons8-coins-16.png">
-  <link type="image/png" sizes="32x32" rel="icon" href="%PUBLIC_URL%/icons8-coins-32.png">
-  <link type="image/png" sizes="96x96" rel="icon" href="%PUBLIC_URL%/icons8-coins-96.png">
-  <link rel="icon" type="image/png" sizes="72x72" href="%PUBLIC_URL%/icons8-coins-72.png">
-  <link rel="apple-touch-icon" type="image/png" sizes="57x57" href="%PUBLIC_URL%/icons8-coins-57.png">
-  <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="%PUBLIC_URL%/icons8-coins-60.png">
-  <link rel="apple-touch-icon" type="image/png" sizes="72x72" href="%PUBLIC_URL%/icons8-coins-72.png">
-  <link rel="apple-touch-icon" type="image/png" sizes="76x76" href="%PUBLIC_URL%/icons8-coins-76.png">
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#b68d37" />
-  <meta name="description" content="Calculate your crypto staking rewards" />
-  <meta name="google-site-verification" content="gLLiZJA-dKs-a0crpJ0aM3EhNw2C8AGFZrIsbI3SsNA" />
-  <!-- <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" /> -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
-  <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
-  <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-  <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
+    <link
+      type="image/png"
+      sizes="16x16"
+      rel="icon"
+      href="%PUBLIC_URL%/icons8-coins-16.png"
+    />
+    <link
+      type="image/png"
+      sizes="32x32"
+      rel="icon"
+      href="%PUBLIC_URL%/icons8-coins-32.png"
+    />
+    <link
+      type="image/png"
+      sizes="96x96"
+      rel="icon"
+      href="%PUBLIC_URL%/icons8-coins-96.png"
+    />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link
+      rel="canonical"
+      href="https://andr-drgm.github.io/crypto-staking-calculator/"
+    />
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-  <title>Crypto Staking Calculator</title>
-</head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#152652" />
+    <meta name="application-name" content="Crypto Staking Calculator" />
+    <meta
+      name="description"
+      content="Free crypto staking calculator with a retro arcade design. Estimate daily, weekly, monthly, and yearly staking rewards, compare compounding modes, and explore APR to APY effects."
+    />
+    <meta
+      name="keywords"
+      content="crypto staking calculator, staking rewards calculator, APR calculator, APY calculator, proof of stake rewards, compound staking rewards"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta
+      name="google-site-verification"
+      content="gLLiZJA-dKs-a0crpJ0aM3EhNw2C8AGFZrIsbI3SsNA"
+    />
 
-<body>
-  <noscript>You need to enable JavaScript to run this app.</noscript>
-  <div id="root"></div>
-  <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:url"
+      content="https://andr-drgm.github.io/crypto-staking-calculator/"
+    />
+    <meta property="og:site_name" content="Crypto Staking Calculator" />
+    <meta
+      property="og:title"
+      content="Crypto Staking Calculator | Retro APR and APY Reward Estimator"
+    />
+    <meta
+      property="og:description"
+      content="Estimate crypto staking rewards, compare compounding schedules, and use a more playful staking calculator built around a retro arcade interface."
+    />
+    <meta
+      property="og:image"
+      content="https://andr-drgm.github.io/crypto-staking-calculator/logo512.png"
+    />
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Crypto Staking Calculator | Retro APR and APY Reward Estimator"
+    />
+    <meta
+      name="twitter:description"
+      content="Free staking rewards calculator for crypto users who want APR, compounding, and a more fun interface."
+    />
+    <meta
+      name="twitter:image"
+      content="https://andr-drgm.github.io/crypto-staking-calculator/logo512.png"
+    />
 
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
-</body>
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
 
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebApplication",
+            "name": "Crypto Staking Calculator",
+            "url": "https://andr-drgm.github.io/crypto-staking-calculator/",
+            "applicationCategory": "FinanceApplication",
+            "operatingSystem": "Any",
+            "inLanguage": "en",
+            "description": "Free crypto staking calculator that estimates daily, weekly, monthly, and yearly staking rewards with optional compounding.",
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD"
+            },
+            "featureList": [
+              "Estimate staking rewards from a token balance and APR",
+              "Compare non-compounding and compounding outcomes",
+              "Preview effective yearly returns for proof-of-stake assets"
+            ]
+          },
+          {
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "What does this crypto staking calculator do?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "It estimates staking rewards from a starting balance, an APR, and an optional compounding schedule so users can compare daily, weekly, monthly, and yearly outcomes."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "What is the difference between APR and APY here?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "APR is the base annual reward rate. When rewards are restaked during the year, the effective return increases and behaves more like APY."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Can this calculator be used for different proof-of-stake coins?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes. The math works for any proof-of-stake asset where the user knows the staked amount and annual reward rate, although token price movement, fees, and slashing are not modeled."
+                }
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+
+    <title>Crypto Staking Calculator | Retro APR and APY Reward Estimator</title>
+  </head>
+
+  <body>
+    <noscript>
+      Crypto Staking Calculator requires JavaScript to estimate staking rewards
+      and run the interactive retro arcade experience.
+    </noscript>
+    <div id="root"></div>
+  </body>
 </html>

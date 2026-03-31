@@ -1,154 +1,377 @@
-import { Container } from "@mui/material";
-import { Component } from "react";
-import TextField from '@mui/material/TextField';
-import MenuItem from '@mui/material/MenuItem';
-import RewardsTable from "./RewardsTable";
-import InputAdornment from '@mui/material/InputAdornment';
+import { useState } from 'react';
+import RewardsTable from './RewardsTable';
 
-export default class CalculatorV1 extends Component {
-    constructor(props) {
-        super(props);
+const compoundOptions = [
+  { value: '0', label: 'No compounding' },
+  { value: '365', label: 'Compound daily' },
+  { value: '52', label: 'Compound weekly' },
+  { value: '12', label: 'Compound monthly' },
+  { value: '1', label: 'Compound yearly' },
+];
 
-        this.state = {
-            stakedValue: 1000,
-            apr: 12,
-            compoundTimes: 0,
-            dailyAPR: "",
-            dailyReward: "",
-            weeklyAPR: "",
-            weeklyReward: "",
-            monthlyAPR: "",
-            monthlyReward: "",
-            yearlyAPR: "",
-            yearlyReward: ""
-        }
+const moodOptions = {
+  bull: {
+    label: 'Bull',
+    quest:
+      'Green candle mode. Restake aggressively, protect your sleep, and avoid buying tops because of pure vibes.',
+    perk: 'Side quest buff: +12 conviction, -4 panic refreshes.',
+  },
+  crab: {
+    label: 'Crab',
+    quest:
+      'Sideways market mode. Farm the yield, stack steady rewards, and let patience do the heavy lifting.',
+    perk: 'Side quest buff: +10 discipline, +8 range-trader calm.',
+  },
+  bear: {
+    label: 'Bear',
+    quest:
+      'Red chart mode. Focus on token accumulation, validator quality, and surviving the timeline without doomscrolling.',
+    perk: 'Side quest buff: +15 resilience, +5 dry powder.',
+  },
+};
 
-        this.handleChange = this.handleChange.bind(this)
+const holdRanks = [
+  {
+    min: 0,
+    title: 'Pocket Shrimp',
+    summary: 'Tiny bag, clean interface, zero shame.',
+  },
+  {
+    min: 500,
+    title: 'Moon Scout',
+    summary: 'You are staking with intent now.',
+  },
+  {
+    min: 2500,
+    title: 'Node Knight',
+    summary: 'This wallet has started taking yield seriously.',
+  },
+  {
+    min: 10000,
+    title: 'Validator Wizard',
+    summary: 'Compound energy is getting hard to ignore.',
+  },
+  {
+    min: 25000,
+    title: 'Mega Whale',
+    summary: 'Large bags, calm pulse, powerful delegation aura.',
+  },
+];
+
+const numberFormatter = new Intl.NumberFormat('en-US', {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
+
+const integerFormatter = new Intl.NumberFormat('en-US');
+
+function clamp(value, min, max) {
+  return Math.min(Math.max(value, min), max);
+}
+
+function calculateRewards(principalInput, aprInput, compoundInput) {
+  const principal = Math.max(Number(principalInput) || 0, 0);
+  const apr = Math.max(Number(aprInput) || 0, 0);
+  const compoundTimes = Math.max(Number(compoundInput) || 0, 0);
+
+  const effectiveApr =
+    compoundTimes > 0
+      ? ((1 + apr / 100 / compoundTimes) ** compoundTimes - 1) * 100
+      : apr;
+
+  const yearlyReward = (principal * effectiveApr) / 100;
+  const dailyReward = yearlyReward / 365;
+  const weeklyReward = dailyReward * 7;
+  const monthlyReward = yearlyReward / 12;
+  const endingBalance = principal + yearlyReward;
+
+  return {
+    principal,
+    apr,
+    compoundTimes,
+    effectiveApr,
+    dailyApr: effectiveApr / 365,
+    weeklyApr: (effectiveApr / 365) * 7,
+    monthlyApr: effectiveApr / 12,
+    yearlyReward,
+    dailyReward,
+    weeklyReward,
+    monthlyReward,
+    endingBalance,
+  };
+}
+
+function getHoldRank(score) {
+  let currentRank = holdRanks[0];
+
+  holdRanks.forEach((rank) => {
+    if (score >= rank.min) {
+      currentRank = rank;
     }
+  });
 
-    handleChange(event) {
-        let stakedValue = 0;
-        let apr;
+  return currentRank;
+}
 
-        let yearlyAPR, yearlyReward, dailyAPR, dailyReward, weeklyAPR, weeklyReward, monthlyAPR, monthlyReward;
-        this.setState({
-            [event.target.name]: event.target.value
-        }, () => {
+function getMiningMessage(blocksMined) {
+  if (blocksMined === 0) {
+    return 'Tap the BTC chip to mine pretend blocks and wake up the validator.';
+  }
 
-            stakedValue = this.state.stakedValue;
-            if(this.state.compoundTimes === 0)
-                apr = this.state.apr;
-            else
-                // apr = ((1 + parseInt(this.state.apr)/parseInt(this.state.compoundTimes)) ** parseInt(this.state.compoundTimes)) - 1;
-                apr = (((this.state.apr / this.state.compoundTimes) / 100 + 1) ** this.state.compoundTimes - 1) * 100
+  if (blocksMined < 8) {
+    return 'Hash rate warming up. The mempool has noticed you.';
+  }
 
-            // console.log("APR: ", apr, " CompoundTimes: ", this.state.compoundTimes)
+  if (blocksMined < 24) {
+    return 'Block flow stable. This arcade rig is actually humming.';
+  }
 
-            yearlyAPR = parseInt(apr).toFixed(2);
-            yearlyReward = ((stakedValue * apr) / 100).toFixed(2);
-            // console.log("Staked Value: ", stakedValue, " YearlyReward: ", yearlyReward)
-            dailyAPR = (yearlyAPR / 365).toFixed(2);
-            dailyReward = (yearlyReward / 365).toFixed(2);
-            weeklyAPR = (dailyAPR * 7).toFixed(2);
-            weeklyReward = (dailyReward * 7).toFixed(2);
-            monthlyAPR = (yearlyAPR / 12).toFixed(1);
-            monthlyReward = (yearlyReward / 12).toFixed(1);
+  if (blocksMined < 48) {
+    return 'Validators approve. The chain is moving fast today.';
+  }
 
-            this.setState({
-                dailyAPR: dailyAPR,
-                dailyReward: dailyReward,
-                weeklyAPR: weeklyAPR,
-                weeklyReward: weeklyReward,
-                monthlyAPR: monthlyAPR,
-                monthlyReward: monthlyReward,
-                yearlyAPR: yearlyAPR,
-                yearlyReward: yearlyReward
-            })
-        });
+  return 'Legendary uptime. Touch grass after this session.';
+}
 
+function getCompoundLabel(value) {
+  const activeOption = compoundOptions.find((option) => option.value === value);
+  return activeOption ? activeOption.label : 'No compounding';
+}
 
+export default function CalculatorV1() {
+  const [stakedValue, setStakedValue] = useState('1000');
+  const [apr, setApr] = useState('12');
+  const [compoundTimes, setCompoundTimes] = useState('0');
+  const [marketMood, setMarketMood] = useState('bull');
+  const [blocksMined, setBlocksMined] = useState(0);
 
-        
-    }
+  const rewards = calculateRewards(stakedValue, apr, compoundTimes);
+  const compoundLabel = getCompoundLabel(compoundTimes);
+  const holdScore =
+    rewards.endingBalance + rewards.yearlyReward * 8 + blocksMined * 25;
+  const holdRank = getHoldRank(holdScore);
+  const holdMeter = clamp((holdScore / 35000) * 100, 0, 100);
+  const miningProgress = clamp((blocksMined / 64) * 100, 0, 100);
+  const activeMood = moodOptions[marketMood];
 
-    componentDidMount(){
-        let stakedValue = 0;
-        let apr;
+  const rewardRows = [
+    {
+      label: 'Daily',
+      reward: numberFormatter.format(rewards.dailyReward),
+      apr: numberFormatter.format(rewards.dailyApr),
+    },
+    {
+      label: 'Weekly',
+      reward: numberFormatter.format(rewards.weeklyReward),
+      apr: numberFormatter.format(rewards.weeklyApr),
+    },
+    {
+      label: 'Monthly',
+      reward: numberFormatter.format(rewards.monthlyReward),
+      apr: numberFormatter.format(rewards.monthlyApr),
+    },
+    {
+      label: 'Yearly',
+      reward: numberFormatter.format(rewards.yearlyReward),
+      apr: numberFormatter.format(rewards.effectiveApr),
+    },
+  ];
 
-        let yearlyAPR, yearlyReward, dailyAPR, dailyReward, weeklyAPR, weeklyReward, monthlyAPR, monthlyReward;
-        stakedValue = this.state.stakedValue;
-            apr = this.state.apr;
+  return (
+    <div className="calculator-layout">
+      <section className="pixel-panel calculator-panel" aria-labelledby="calculator-title">
+        <div className="panel-header">
+          <div>
+            <p className="panel-kicker">Staking Inputs</p>
+            <h3 className="panel-title" id="calculator-title">
+              Stake your coins. Watch the numbers move.
+            </h3>
+          </div>
+          <span className="panel-badge">Live Sim</span>
+        </div>
 
-            yearlyAPR = this.state.apr;
-            yearlyReward = (stakedValue * apr) / 100;
-            // console.log("Staked Value: ", stakedValue, " YearlyReward: ", yearlyReward)
-            dailyAPR = (yearlyAPR / 365).toFixed(2);
-            dailyReward = (yearlyReward / 365).toFixed(2);
-            weeklyAPR = dailyAPR * 7;
-            weeklyReward = dailyReward * 7;
-            monthlyAPR = (yearlyAPR / 12).toFixed(1);
-            monthlyReward = (yearlyReward / 12).toFixed(1);
+        <div className="form-grid">
+          <label className="field" htmlFor="staked-value">
+            <span className="field-label">Staked coins</span>
+            <input
+              className="pixel-input"
+              id="staked-value"
+              inputMode="decimal"
+              min="0"
+              step="any"
+              type="number"
+              value={stakedValue}
+              onChange={(event) => setStakedValue(event.target.value)}
+            />
+            <span className="field-help">
+              Enter the amount of tokens delegated or locked for staking.
+            </span>
+          </label>
 
-            this.setState({
-                dailyAPR: dailyAPR,
-                dailyReward: dailyReward,
-                weeklyAPR: weeklyAPR,
-                weeklyReward: weeklyReward,
-                monthlyAPR: monthlyAPR,
-                monthlyReward: monthlyReward,
-                yearlyAPR: yearlyAPR,
-                yearlyReward: yearlyReward
-            })
-    }
+          <label className="field" htmlFor="apr">
+            <span className="field-label">APR</span>
+            <input
+              className="pixel-input"
+              id="apr"
+              inputMode="decimal"
+              min="0"
+              step="any"
+              type="number"
+              value={apr}
+              onChange={(event) => setApr(event.target.value)}
+            />
+            <span className="field-help">
+              Use the nominal annual reward rate published by the protocol or
+              validator.
+            </span>
+          </label>
 
-    render() {
-        return (
-            <Container
-                component="main"
-                maxWidth="sm"
-                sx={{ marginBottom: 2, '& .MuiTextField-root': { mb: 2 } }}
+          <label className="field" htmlFor="compound-times">
+            <span className="field-label">Compounding cadence</span>
+            <select
+              className="pixel-select"
+              id="compound-times"
+              value={compoundTimes}
+              onChange={(event) => setCompoundTimes(event.target.value)}
             >
-                <TextField
-                    fullWidth
-                    name="stakedValue"
-                    type={"number"}
-                    value={this.state.stakedValue}
-                    onChange={this.handleChange}
-                    label="Number of staked coins"
-                    helperText="Enter your staked amount"
+              {compoundOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+            <span className="field-help">
+              Restaking frequency can lift an APR into a higher effective yearly
+              return.
+            </span>
+          </label>
+        </div>
 
-                />
-                <TextField
-                    fullWidth
-                    name="apr"
-                    type={"number"}
-                    value={this.state.apr}
-                    onChange={this.handleChange}
-                    InputProps={{
-                        endAdornment: <InputAdornment>%</InputAdornment>,
-                    }}
-                    label="APR"
-                    helperText="Enter staking APR"
-                />
-                <TextField
-                    fullWidth
-                    select
-                    name="compoundTimes"
-                    label="Compound"
-                    value={this.state.compoundTimes}
-                    onChange={this.handleChange}
-                    helperText="How often it compounds"
-                >
-                    <MenuItem value={0}>None</MenuItem>
-                    <MenuItem value={365}>Daily</MenuItem>
-                    <MenuItem value={12}>Monthly</MenuItem>
-                    <MenuItem value={1}>Yearly</MenuItem>
-                </TextField>
+        <div className="stat-grid" aria-label="Reward summary">
+          <article className="stat-card">
+            <span className="stat-label">Effective APR</span>
+            <strong>{numberFormatter.format(rewards.effectiveApr)}%</strong>
+            <p>{compoundLabel} applied to the base rate.</p>
+          </article>
 
-                <RewardsTable {...this.state} />
+          <article className="stat-card">
+            <span className="stat-label">Yearly reward</span>
+            <strong>{numberFormatter.format(rewards.yearlyReward)}</strong>
+            <p>Estimated token-denominated rewards after one year.</p>
+          </article>
 
+          <article className="stat-card">
+            <span className="stat-label">Ending balance</span>
+            <strong>{numberFormatter.format(rewards.endingBalance)}</strong>
+            <p>Starting stake plus modeled yearly rewards.</p>
+          </article>
+        </div>
 
-            </Container>
-        )
-    }
+        <RewardsTable rows={rewardRows} compoundLabel={compoundLabel} />
+      </section>
+
+      <aside className="side-column" id="arcade">
+        <section className="pixel-panel mini-panel">
+          <div className="panel-header compact">
+            <div>
+              <p className="panel-kicker">Mini Game 01</p>
+              <h3 className="panel-title">Diamond hands meter</h3>
+            </div>
+          </div>
+
+          <div className="rank-box">
+            <span className="rank-label">Wallet rank</span>
+            <strong>{holdRank.title}</strong>
+            <p>{holdRank.summary}</p>
+          </div>
+
+          <div
+            className="meter-track"
+            aria-label="Diamond hands meter"
+            role="progressbar"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-valuenow={Math.round(holdMeter)}
+          >
+            <div className="meter-fill" style={{ width: `${holdMeter}%` }} />
+          </div>
+
+          <p className="meter-note">
+            Your score reacts to stake size, effective APR, and the blocks you
+            mine in the arcade panel below.
+          </p>
+        </section>
+
+        <section className="pixel-panel mini-panel">
+          <div className="panel-header compact">
+            <div>
+              <p className="panel-kicker">Mini Game 02</p>
+              <h3 className="panel-title">Market mood quest</h3>
+            </div>
+          </div>
+
+          <div className="mood-grid" role="group" aria-label="Choose market mood">
+            {Object.entries(moodOptions).map(([key, option]) => (
+              <button
+                className={`mood-button${marketMood === key ? ' is-active' : ''}`}
+                key={key}
+                onClick={() => setMarketMood(key)}
+                type="button"
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="quest-box">
+            <p>{activeMood.quest}</p>
+            <span>{activeMood.perk}</span>
+          </div>
+        </section>
+
+        <section className="pixel-panel mini-panel">
+          <div className="panel-header compact">
+            <div>
+              <p className="panel-kicker">Mini Game 03</p>
+              <h3 className="panel-title">Tap to mine</h3>
+            </div>
+          </div>
+
+          <button
+            className="mine-button"
+            onClick={() => setBlocksMined((current) => current + 1)}
+            type="button"
+          >
+            <span className="mine-chip">BTC</span>
+            <span className="mine-copy">Mine Block</span>
+          </button>
+
+          <p className="mine-score">
+            {integerFormatter.format(blocksMined)} blocks mined
+          </p>
+
+          <div
+            className="meter-track mine-track"
+            aria-label="Mining progress"
+            role="progressbar"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-valuenow={Math.round(miningProgress)}
+          >
+            <div className="meter-fill mine-fill" style={{ width: `${miningProgress}%` }} />
+          </div>
+
+          <p className="meter-note">{getMiningMessage(blocksMined)}</p>
+
+          <button
+            className="pixel-button pixel-button-secondary reset-button"
+            onClick={() => setBlocksMined(0)}
+            type="button"
+          >
+            Reboot Chain
+          </button>
+        </section>
+      </aside>
+    </div>
+  );
 }
