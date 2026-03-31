@@ -1,6 +1,7 @@
 {
-  "short_name": "Crypto Staking Calculator",
-  "name": "Calculate your crypto staking rewards",
+  "short_name": "Stake Quest",
+  "name": "Crypto Staking Calculator - Pixel Art Reward Estimator",
+  "description": "Estimate crypto staking rewards, compare compounding modes, and preview APR to APY effects.",
   "icons": [
     {
       "src": "icons8-coins-16.png",
@@ -18,20 +19,15 @@
       "type": "image/png"
     },
     {
-      "src": "/icons8-coins-72.png",
+      "src": "icons8-coins-72.png",
       "sizes": "72x72",
-      "type": "image/png",
-      "density": "1.5"
-     },
-     {
-      "src": "/icons8-coins-96.png",
-      "sizes": "96x96",
-      "type": "image/png",
-      "density": "2.0"
-     }
+      "type": "image/png"
+    }
   ],
   "start_url": ".",
+  "scope": ".",
   "display": "standalone",
-  "theme_color": "#b68d37",
-  "background_color": "#375fb6"
+  "theme_color": "#152652",
+  "background_color": "#090d1c",
+  "categories": ["finance", "utilities", "productivity"]
 }
